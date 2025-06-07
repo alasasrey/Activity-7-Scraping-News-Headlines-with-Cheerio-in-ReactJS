@@ -1,9 +1,9 @@
-import Home from "./components/client/Home.js";
+import Frontend from "./components/frontend/Frontend.js";
 
 function App() {
   return (
     <div>
-      <Home />
+      <Frontend />
     </div>
   );
 }
