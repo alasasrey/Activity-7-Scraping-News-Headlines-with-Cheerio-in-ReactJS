@@ -1,11 +1,11 @@
 import express, { json } from "express";
 import axios from "axios";
-import { load } from "cheerio";
+import cheerio from "cheerio";
 import { URL } from "url";
 import puppeteer from "puppeteer";
 
 const app = express();
-const PORT = 5000;
+const PORT = 3000;
 
 app.use(json());
 
@@ -14,7 +14,7 @@ app.post("/scrape", async (req, res) => {
   const { url } = req.body;
   try {
     const response = await axios.get(url);
-    const $ = load(response.data);
+    const $ = cheerio.load(response.data);
     const articles = [];
 
     $("article").each((i, elem) => {
@@ -44,7 +44,7 @@ app.post("/scrape-dynamic", async (req, res) => {
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: "networkidle2" });
     const content = await page.content();
-    const $ = load(content);
+    const $ = cheerio.load(content);
     const articles = [];
 
     $("article").each((i, elem) => {
