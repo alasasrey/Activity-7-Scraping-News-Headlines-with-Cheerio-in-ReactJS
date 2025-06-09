@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Filter } from "./components/frontend/Filter";
-import { Article } from "./components/frontend/Article";
+import { Filter } from "./components/frontend/Filter.js";
+import { Article } from "./components/frontend/Article.js";
 
 function App() {
   const [url, setUrl] = useState("");
@@ -23,28 +23,52 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>News Scraper</h1>
-      <label for="">Enter website URL: </label>
-      <input
-        type="text"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        placeholder="Enter website URL"
-      />
+    <div className="min-h-screen bg-gray-100 py-10 px-4">
+      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8 space-y-6">
+        <h1 className="text-3xl font-bold text-center text-blue-700">
+          📰 News Scraper
+        </h1>
 
-      {/* filter section */}
-      <Filter />
+        <div className="space-y-2">
+          <label className="block text-gray-700 font-medium">
+            Enter website URL:
+          </label>
+          <input
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            type="text"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="https://example.com"
+          />
+        </div>
 
-      {/* the scrape button */}
-      <br />
-      <button onClick={handleScrape}>Scrape</button>
+        {/* Filter section */}
+        <div>
+          <Filter />
+        </div>
 
-      {/* loading spinner or progress indicator */}
-      {loading && <p>Loading...</p>}
+        {/* Scrape button */}
+        <div className="text-center">
+          <button
+            onClick={handleScrape}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300"
+          >
+            Scrape
+          </button>
+        </div>
 
-      {/* some articles that are being scrape */}
-      <Article article={articles} />
+        {/* Loading indicator */}
+        {loading && (
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        )}
+
+        {/* Articles section */}
+        <div>
+          <Article article={articles} />
+        </div>
+      </div>
     </div>
   );
 }
