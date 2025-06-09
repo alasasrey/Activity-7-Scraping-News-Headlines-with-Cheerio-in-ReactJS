@@ -11,9 +11,17 @@ function App() {
   const handleScrape = async () => {
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:3000/scrape", {
-        url,
-      });
+      const response = await axios.post(
+        //check in the package.json for the proxy property for the link or in the server.js
+        "http://localhost:4000/scrape",
+        {
+          url, //using this code to make sure you are a legit user and not get blocked
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+          },
+        }
+      );
       setArticles(response.data);
     } catch (error) {
       console.error("Error scraping the website:", error);
@@ -28,7 +36,6 @@ function App() {
         <h1 className="text-3xl font-bold text-center text-blue-700">
           📰 News Scraper
         </h1>
-
         <div className="space-y-2">
           <label className="block text-gray-700 font-medium">
             Enter website URL:
@@ -41,12 +48,11 @@ function App() {
             placeholder="https://example.com"
           />
         </div>
-
         {/* Filter section */}
+        //TODO: FINISH THIS CODE IN THE Filter.js FILE!!!!
         <div>
           <Filter />
         </div>
-
         {/* Scrape button */}
         <div className="text-center">
           <button
@@ -56,14 +62,12 @@ function App() {
             Scrape
           </button>
         </div>
-
         {/* Loading indicator */}
         {loading && (
           <div className="flex justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
         )}
-
         {/* Articles section */}
         <div>
           <Article article={articles} />

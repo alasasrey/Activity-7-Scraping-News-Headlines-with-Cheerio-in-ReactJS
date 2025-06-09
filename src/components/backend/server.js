@@ -1,13 +1,21 @@
+// REMINDER: WHEN CODING IN THIS SERVER MAKE SURE TO RUN THIS CMD COMMAND:
+// "npm run nodemon-server" use nodemon to automatically restart the server for you!
+//INSTALL THE NODEMON IF YOU DON'T HAVE IN YOUR NPM: "npm install -g nodemon"
+// TO MAKE SURE THAT YOUR CODE IS WORKING OR NOT!
+
 import express, { json } from "express";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { URL } from "url";
 import puppeteer from "puppeteer";
+import cors from "cors";
 
 const app = express();
 const PORT = 4000;
 
 app.use(json());
+//use this code to not get block by other websites
+app.use(cors());
 
 //regular version
 app.post("/scrape", async (req, res) => {
@@ -17,12 +25,12 @@ app.post("/scrape", async (req, res) => {
     const $ = cheerio.load(response.data);
     const articles = [];
 
-    $("article").each((i, elem) => {
-      const title = $(elem).find("h1, h2, h3").first().text().trim();
+    $("html").each((i, element) => {
+      const title = $(element).find("h1, h2, h3").first().text().trim();
       const author =
-        $(elem).find('[itemprop="author"]').text().trim() || "Unknown";
-      const date = $(elem).find("time").attr("datetime") || "Unknown";
-      const link = $(elem).find("a").attr("href");
+        $(element).find('[itemprop="author"]').text().trim() || "Unknown";
+      const date = $(element).find("time").attr("datetime") || "Unknown";
+      const link = $(element).find("a").attr("href");
       const absoluteLink = new URL(link, url).href;
 
       if (title) {
@@ -30,6 +38,7 @@ app.post("/scrape", async (req, res) => {
       }
     });
 
+    //use this code to send the data to the frontend
     res.json(articles);
   } catch (error) {
     res.status(500).json({ error: "Error scraping the website." });
@@ -47,12 +56,12 @@ app.post("/scrape-dynamic", async (req, res) => {
     const $ = cheerio.load(content);
     const articles = [];
 
-    $("article").each((i, elem) => {
-      const title = $(elem).find("h1, h2, h3").first().text().trim();
+    $("article").each((i, element) => {
+      const title = $(element).find("h1, h2, h3").first().text().trim();
       const author =
-        $(elem).find('[itemprop="author"]').text().trim() || "Unknown";
-      const date = $(elem).find("time").attr("datetime") || "Unknown";
-      const link = $(elem).find("a").attr("href");
+        $(element).find('[itemprop="author"]').text().trim() || "Unknown";
+      const date = $(element).find("time").attr("datetime") || "Unknown";
+      const link = $(element).find("a").attr("href");
       const absoluteLink = new URL(link, url).href;
 
       if (title) {
@@ -61,6 +70,7 @@ app.post("/scrape-dynamic", async (req, res) => {
     });
 
     await browser.close();
+    //use this code to send the data to the frontend
     res.json(articles);
   } catch (error) {
     res.status(500).json({ error: "Error scraping the dynamic website." });
@@ -68,5 +78,5 @@ app.post("/scrape-dynamic", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port http://localhost:${PORT}`);
 });
