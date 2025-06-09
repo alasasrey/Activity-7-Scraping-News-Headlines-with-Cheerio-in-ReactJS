@@ -10,6 +10,8 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.9.0",
     "cheerio": "^1.0.0",
+    "express": "^5.1.0",
+    "puppeteer": "^24.10.0",
     "puppeteer-core": "^24.10.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -20,7 +22,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "node-server": "node src\\components\\backend\\server.js"
   },
   "eslintConfig": {
     "extends": [

@@ -1,11 +1,11 @@
 import express, { json } from "express";
 import axios from "axios";
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 import { URL } from "url";
 import puppeteer from "puppeteer";
 
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 
 app.use(json());
 
