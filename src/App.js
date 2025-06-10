@@ -1,34 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import axios from "axios";
 import { Filter } from "./components/frontend/Filter.js";
 import { Article } from "./components/frontend/Article.js";
+import { LoadingSpinnerAnimation } from "./components/frontend/LoadingSpinnerAnimation.js";
+import { ScrapeButtons } from "./components/frontend/ScrapeButtons.js";
 
 function App() {
   const [url, setUrl] = useState("");
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [sortBy, setSortBy] = useState("date");
 
+  // this is the regular scrape code
   const handleScrape = async () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        //check in the package.json for the proxy property for the link or in the server.js
-        "http://localhost:4000/scrape",
+        "/scrape",
+        { url },
         {
-          url, //using this code to make sure you are a legit user and not get blocked
+          //use this code to not get blocked by the website
           headers: {
             "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+            Accept:
+              "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Upgrade-Insecure-Requests": "1",
           },
         }
       );
       setArticles(response.data);
     } catch (error) {
-      console.error("Error scraping the website:", error);
+      console.error("Error scraping:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  // this is the dynamic scrape code
+  const handleDynamicScrape = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "/scrape-dynamic",
+        { url },
+        {
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+            Accept:
+              "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Upgrade-Insecure-Requests": "1",
+          },
+        }
+      );
+      setArticles(response.data);
+    } catch (error) {
+      console.error("Error in dynamic scrape:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // this is the filter code
+  const filteredAndSorted = useMemo(() => {
+    let list = articles.filter((a) =>
+      a.title.toLowerCase().includes(keyword.toLowerCase())
+    );
+
+    const sorted = [...list].sort((a, b) => {
+      if (sortBy === "date") {
+        return new Date(b.date) - new Date(a.date);
+      } else {
+        return (b.relevance || 0) - (a.relevance || 0);
+      }
+    });
+    return sorted;
+  }, [articles, keyword, sortBy]);
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
@@ -36,41 +87,35 @@ function App() {
         <h1 className="text-3xl font-bold text-center text-blue-700">
           📰 News Scraper
         </h1>
-        <div className="space-y-2">
-          <label className="block text-gray-700 font-medium">
-            Enter website URL:
-          </label>
-          <input
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            type="text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://example.com"
-          />
-        </div>
-        {/* Filter section */}
-        //TODO: FINISH THIS CODE IN THE Filter.js FILE!!!!
+        <h2 className="text-2xl font-bold text-center text-blue-700">
+          by Rey M. Alas-as
+        </h2>
+
+        <input
+          className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-blue-500"
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="Enter website URL..."
+        />
+
+        <Filter
+          keyword={keyword}
+          sortBy={sortBy}
+          onChangeKeyword={setKeyword}
+          onChangeSort={setSortBy}
+        />
+
+        <ScrapeButtons
+          handleScrape={handleScrape}
+          handleDynamicScrape={handleDynamicScrape}
+        />
+
+        {/* this is the loading spinner animation */}
+        {loading && <LoadingSpinnerAnimation />}
+
         <div>
-          <Filter />
-        </div>
-        {/* Scrape button */}
-        <div className="text-center">
-          <button
-            onClick={handleScrape}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300"
-          >
-            Scrape
-          </button>
-        </div>
-        {/* Loading indicator */}
-        {loading && (
-          <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          </div>
-        )}
-        {/* Articles section */}
-        <div>
-          <Article article={articles} />
+          <Article article={filteredAndSorted} />
         </div>
       </div>
     </div>

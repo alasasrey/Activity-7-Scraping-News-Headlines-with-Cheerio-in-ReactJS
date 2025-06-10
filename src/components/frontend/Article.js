@@ -18,14 +18,27 @@ function Article({ article }) {
             rel="noopener noreferrer"
             className="text-lg font-semibold text-blue-700 hover:underline"
           >
-            {item.title}
+            {item.title || "Untitled"}
           </a>
+
           <p className="text-sm text-gray-600 mt-2">
             ✍️ <span className="font-medium">Author:</span>{" "}
             {item.author || "Unknown"}
           </p>
+
           <p className="text-sm text-gray-600">
             📅 <span className="font-medium">Date:</span> {item.date || "N/A"}
+          </p>
+
+          <p className="text-sm text-gray-600">
+            🔖 <span className="font-medium">Relevance:</span>{" "}
+            {item.relevance || "N/A"}
+          </p>
+
+          <p className="text-sm text-gray-600">
+            🌐 <span className="font-medium">Source:</span>
+            {" www."}
+            {item.source || "N/A"}
           </p>
         </div>
       ))}
