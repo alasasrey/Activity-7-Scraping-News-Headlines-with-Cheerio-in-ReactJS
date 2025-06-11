@@ -55,6 +55,7 @@ function App() {
             "Accept-Language": "en-US,en;q=0.5",
             "Upgrade-Insecure-Requests": "1",
           },
+          timeout: 10000,
         }
       );
       setArticles(response.data);
@@ -87,9 +88,7 @@ function App() {
         <h1 className="text-3xl font-bold text-center text-blue-700">
           📰 News Scraper
         </h1>
-        <h2 className="text-2xl font-bold text-center text-blue-700">
-          by Rey M. Alas-as
-        </h2>
+        <h2 className="text-2xl font-bold text-center text-blue-700"></h2>
 
         <input
           className="w-full border p-2 rounded-lg focus:ring-2 focus:ring-blue-500"

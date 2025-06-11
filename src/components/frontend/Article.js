@@ -13,7 +13,7 @@ function Article({ article }) {
           className="bg-white rounded-xl shadow hover:shadow-lg transition duration-300 p-6 border border-gray-100"
         >
           <a
-            href={item.link}
+            href={`/article-viewer?url=${encodeURIComponent(item.link)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-lg font-semibold text-blue-700 hover:underline"
@@ -30,10 +30,10 @@ function Article({ article }) {
             📅 <span className="font-medium">Date:</span> {item.date || "N/A"}
           </p>
 
-          <p className="text-sm text-gray-600">
+          {/* <p className="text-sm text-gray-600">
             🔖 <span className="font-medium">Relevance:</span>{" "}
             {item.relevance || "N/A"}
-          </p>
+          </p> */}
 
           <p className="text-sm text-gray-600">
             🌐 <span className="font-medium">Source:</span>
